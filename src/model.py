@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import onnxruntime as ort
-import torch
+import pickle
 from transformers import AutoTokenizer
 
 
@@ -12,10 +12,11 @@ class ModelBase(ABC):
 
 
 class ArabicSentimentModel(ModelBase):
-    def __init__(self, tokenizer_model_name="aubmindlab/bert-base-arabertv02", vocab_file_path="notebooks/vocab.pt", model_file_path="notebooks/model.onnx"):
+    def __init__(self, tokenizer_model_name="aubmindlab/bert-base-arabertv02", vocab_file_path="notebooks/vocab.pkl", model_file_path="notebooks/model.onnx"):
         super().__init__()
         self.session = ort.InferenceSession(model_file_path)
-        self.vocab = torch.load(vocab_file_path)
+        with open(vocab_file_path, 'rb') as f:
+            self.vocab = pickle.load(f)
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_model_name)
         self.classes = {0: "Negative", 1: "Positive"}
 
