@@ -1,0 +1,39 @@
+from main import predict, health, root
+import requests
+
+def test_prediction_positive(base_url):
+    url = f"{base_url}/predict"
+    payload = {
+        "text": "انا احب هذا المنتج",
+    }
+    
+    response = requests.post(url, json=payload)
+    
+    assert response.status_code == 200
+    
+    response_data = response.json()
+    assert response_data["result"] == "Positive"
+
+def test_prediction_negative(base_url):
+    url = f"{base_url}/predict"
+    payload = {
+        # "text": "انا ما راح اشتري هذا المنتج",
+        "text": "string",
+    }
+    
+    response = requests.post(url, json=payload)
+    
+    assert response.status_code == 200
+    
+    response_data = response.json()
+    assert response_data["result"] == "Negative"
+
+def test_health(base_url):
+    url = f"{base_url}/health"
+    
+    response = requests.get(url)
+    
+    assert response.status_code == 200
+    
+    response_data = response.json()
+    assert response_data["status"] == "healthy"
