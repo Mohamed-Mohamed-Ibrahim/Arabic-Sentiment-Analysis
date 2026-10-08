@@ -22,3 +22,11 @@ stages:
     metrics:
       - metrics.json:
           cache: false
+  promote:
+    cmd: python notebooks/promote.py
+    deps:
+      - notebooks/promote.py
+      - metrics.json
+    outs:
+      - best_run.txt:
+          cache: false
