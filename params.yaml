@@ -1,0 +1,11 @@
+prepare:
+  seed: 42
+  split_ratio: 0.8
+  samples: 10
+
+train:
+  batch_size: 64
+  epochs: 10
+  lr: 0.01
+  embed_dim: 64
+  seed: 42

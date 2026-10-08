@@ -1,0 +1,24 @@
+stages:
+  prepare:
+    cmd: python notebooks/prepare.py
+    deps:
+      - data/MSA Dataset.csv
+      - notebooks/prepare.py
+    params:
+      - prepare
+    outs:
+      - data/prepared
+
+  train:
+    cmd: python notebooks/train.py
+    deps:
+      - data/prepared
+      - notebooks/train.py
+    params:
+      - train
+    outs:
+      - model.pth
+      - model.onnx
+    metrics:
+      - metrics.json:
+          cache: false
