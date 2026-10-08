@@ -85,6 +85,7 @@ def evaluate(model, dataloader, device):
 
 
 def main():
+    global params, EPOCHS, LR, SEED, BATCH_SIZE, EMBED_DIM, SPLIT_RATIO, SAMPLES
 
     EPOCHS = params["train"]["epochs"]
     LR = params["train"]["lr"]
@@ -124,13 +125,14 @@ def main():
     optimizer = torch.optim.SGD(model.parameters(), lr=LR)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
 
-    mlflow.set_experiment("Pytorch Training")
-    with mlflow.start_run():
+    mlflow.set_tracking_uri("http://localhost:5000/")
+    mlflow.set_experiment("Model Training 1")
+    with mlflow.start_run() as run:
         mlflow.log_params(
             {"lr": LR, "optimizer": "SGD", "epochs": EPOCHS, "emsize": EMBED_DIM, "seed": SEED, "split_ratio": SPLIT_RATIO, "samples": SAMPLES}
         )
 
-        best_val_acc = 0.0
+        best_val_acc = -1
         for epoch in range(1, EPOCHS + 1):
             model.train()
             cum_loss = 0.0
@@ -154,7 +156,7 @@ def main():
             mlflow.log_metric("train_loss", cum_loss, step=epoch)
             mlflow.log_metric("val_loss", val_loss, step=epoch)
             mlflow.log_metric("val_accuracy", val_acc, step=epoch)
-
+            print(val_acc, best_val_acc, cum_loss)
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
                 torch.save(model.state_dict(), "model.pth")
