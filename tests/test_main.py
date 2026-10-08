@@ -1,5 +1,7 @@
 import pytest
-from main import health, predict, PredictRequest
+
+from main import PredictRequest, health, predict
+
 
 @pytest.mark.asyncio
 async def test_predict_positive(base_url):

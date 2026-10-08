@@ -1,5 +1,5 @@
-from main import predict, health, root
 import requests
+
 
 def test_health(base_url):
     url = f"{base_url}/health"
