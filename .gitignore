@@ -219,3 +219,7 @@ __marimo__/
 
 # Mlfow
 mlartifacts/
+
+# Models
+*.onnx
+*.pth
