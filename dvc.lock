@@ -9,8 +9,8 @@ stages:
       size: 1001699
     - path: notebooks/prepare.py
       hash: md5
-      md5: a1758ee9085b876f680395db9e7261cc
-      size: 2144
+      md5: 23217f53a61bf769197615a6250c3e07
+      size: 2247
     params:
       params.yaml:
         prepare:
@@ -20,21 +20,21 @@ stages:
     outs:
     - path: data/prepared
       hash: md5
-      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
-      size: 599444
+      md5: c8af638d69d3ac4baa47dcad4aa53fef.dir
+      size: 599420
       nfiles: 4
   train:
     cmd: python notebooks/train.py
     deps:
     - path: data/prepared
       hash: md5
-      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
-      size: 599444
+      md5: c8af638d69d3ac4baa47dcad4aa53fef.dir
+      size: 599420
       nfiles: 4
     - path: notebooks/train.py
       hash: md5
-      md5: 8bb965a72875c93876b4da046f154c54
-      size: 6532
+      md5: 04d58388f5d69aed19f0ef98209e360c
+      size: 7528
     params:
       params.yaml:
         train:
@@ -42,18 +42,18 @@ stages:
           batch_size: 1
           epochs: 10
           lr: 0.1
-          embed_dim: 64
+          embed_dim: 128
           seed: 42
     outs:
     - path: metrics.json
       hash: md5
-      md5: 82a12d43738be564dd075c13a354af83
-      size: 50
+      md5: 1763fe4d13ee91fb9981a0ad1d9c97fd
+      size: 49
     - path: model.onnx
       hash: md5
-      md5: 9a1feb2bbc6c0231481af8ed0b62c004
-      size: 2044080
+      md5: 1b5d5853472f0e6b695562f7c3bcb559
+      size: 4151260
     - path: model.pth
       hash: md5
-      md5: edf289cfec1d1ab73e3a16b106b84b82
-      size: 2042246
+      md5: 704fb76f67d10b5dd29110509f17c5f8
+      size: 4149742
