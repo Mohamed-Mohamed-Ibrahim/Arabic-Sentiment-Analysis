@@ -1,4 +1,5 @@
 import mlflow
+import torch
 from mlflow.tracking import MlflowClient
 
 EXPERIMENT_NAME = "Model Training 1"
@@ -8,6 +9,7 @@ TRACKING_URI = "http://localhost:5000/"
 
 def main():
     mlflow.set_tracking_uri(TRACKING_URI)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     client = MlflowClient()
 
     experiment = client.get_experiment_by_name(EXPERIMENT_NAME)
@@ -45,6 +47,31 @@ def main():
 
     with open("best_run.txt", "w") as f:
         f.write(f"run_id: {best_run_id}\n{METRIC_NAME}: {best_score}\n")
+
+    with open("best_run.txt", "r") as f:
+        for line in f:
+            if line.startswith("run_id:"):
+                run_id = line.split(":", 1)[1].strip()
+                break
+
+    print(f"Loading run: {run_id}")
+
+    model = mlflow.pytorch.load_model(f"runs:/{run_id}/model")
+    dummy_text = torch.tensor([1, 2, 3], dtype=torch.int64).to(device)
+    dummy_offsets = torch.tensor([0], dtype=torch.int64).to(device)
+    torch.onnx.export(
+        model,
+        (dummy_text, dummy_offsets),
+        "model.onnx",
+        opset_version=17,
+        input_names=["text", "offsets"],
+        output_names=["output"],
+        dynamic_axes={
+            "text": {0: "total_tokens"},
+            "offsets": {0: "batch_size"},
+            "output": {0: "batch_size"},
+        },
+    )
 
 
 if __name__ == "__main__":

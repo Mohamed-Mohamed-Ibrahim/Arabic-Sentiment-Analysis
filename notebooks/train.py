@@ -167,23 +167,9 @@ def main():
         with open("metrics.json", "w") as f:
             json.dump({"test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
 
-        model.load_state_dict(torch.load("model.pth"))
-        model.eval()
-        dummy_text = torch.tensor([1, 2, 3], dtype=torch.int64).to(device)
-        dummy_offsets = torch.tensor([0], dtype=torch.int64).to(device)
-        torch.onnx.export(
-            model,
-            (dummy_text, dummy_offsets),
-            "model.onnx",
-            opset_version=17,
-            input_names=["text", "offsets"],
-            output_names=["output"],
-            dynamic_axes={
-                "text": {0: "total_tokens"},
-                "offsets": {0: "batch_size"},
-                "output": {0: "batch_size"},
-            },
-        )
+        # model.load_state_dict(torch.load("model.pth"))
+        # model.eval()
+        
 
 
 if __name__ == "__main__":
