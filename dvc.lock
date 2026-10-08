@@ -16,12 +16,12 @@ stages:
         prepare:
           seed: 42
           split_ratio: 0.8
-          samples: 1000
+          samples: 10000
     outs:
     - path: data/prepared
       hash: md5
-      md5: c8af638d69d3ac4baa47dcad4aa53fef.dir
-      size: 599420
+      md5: 0143fd089edbedbb8f662579c0fd895d.dir
+      size: 2231974
       nfiles: 4
   train:
     cmd: python notebooks/train.py
