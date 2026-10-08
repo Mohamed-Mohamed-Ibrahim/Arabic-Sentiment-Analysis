@@ -1,8 +1,8 @@
+import pickle
 from abc import ABC, abstractmethod
 
 import numpy as np
 import onnxruntime as ort
-import pickle
 from transformers import AutoTokenizer
 
 
