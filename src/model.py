@@ -22,7 +22,7 @@ class ArabicSentimentModel(ModelBase):
 
     def text_pipeline(self, text):
         return [
-            self.vocab[token] if token in self.vocab else 0 for token in self.tokenizer.tokenize(str(text).lower())
+            self.vocab.get(token, 0) for token in self.tokenizer.tokenize(str(text).lower())
         ]
 
     def predict(self, X):
