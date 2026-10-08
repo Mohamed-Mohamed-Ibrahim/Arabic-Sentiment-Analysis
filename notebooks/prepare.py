@@ -36,7 +36,7 @@ def yield_tokens(data_iter, tokenizer):
 
 
 def main():
-    global params, SEED, SPLIT_RATIO, SAMPLES
+    global SEED, SPLIT_RATIO, SAMPLES
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 

@@ -85,7 +85,7 @@ def evaluate(model, dataloader, device):
 
 
 def main():
-    global params, EPOCHS, LR, SEED, BATCH_SIZE, EMBED_DIM, SPLIT_RATIO, SAMPLES
+    global EPOCHS, LR, SEED, BATCH_SIZE, EMBED_DIM, SPLIT_RATIO, SAMPLES
 
     EPOCHS = params["train"]["epochs"]
     LR = params["train"]["lr"]
@@ -127,7 +127,7 @@ def main():
 
     mlflow.set_tracking_uri("http://localhost:5000/")
     mlflow.set_experiment("Model Training 1")
-    with mlflow.start_run() as run:
+    with mlflow.start_run():
         mlflow.log_params(
             {"lr": LR, "optimizer": "SGD", "epochs": EPOCHS, "emsize": EMBED_DIM, "seed": SEED, "split_ratio": SPLIT_RATIO, "samples": SAMPLES}
         )
