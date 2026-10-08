@@ -1,0 +1,17 @@
+name: Lint Python Code
+
+on:
+  push:
+    branches: [ "main", "Module-2" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  ruff-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Ruff Linter
+        uses: astral-sh/ruff-action@v3
