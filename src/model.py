@@ -1,11 +1,9 @@
-import torch
+from abc import ABC, abstractmethod
+
 import numpy as np
 import onnxruntime as ort
-from abc import ABC, abstractmethod
+import torch
 from transformers import AutoTokenizer
-
-
-
 
 
 class ModelBase(ABC):
@@ -19,12 +17,13 @@ class ArabicSentimentModel(ModelBase):
         self.session = ort.InferenceSession("notebooks/model.onnx")
         self.vocab = torch.load("notebooks/vocab.pt")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.classes = {0: "Negative", 1: "Positive" }
+        self.classes = {0: "Negative", 1: "Positive"}
 
     def text_pipeline(self, text):
-        return [self.vocab[token] for token in self.tokenizer.tokenize(str(text).lower())]
+        return [
+            self.vocab[token] for token in self.tokenizer.tokenize(str(text).lower())
+        ]
 
-    
     def predict(self, X):
         text_list, offsets = [], [0]
         for text in X:

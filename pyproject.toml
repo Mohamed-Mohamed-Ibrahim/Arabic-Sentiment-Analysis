@@ -8,9 +8,13 @@ dependencies = [
     "dvc>=3.67.1",
     "fastapi>=0.141.1",
     "mlflow>=3.16.0",
+    "ruff>=0.16.10",
 ]
 
 [tool.uv.workspace]
 members = [
     "notebooks",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/*" = ["F401", "F811", "I001"]

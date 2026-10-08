@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
-from src.model import ArabicSentimentModel
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, Field
 
+from src.model import ArabicSentimentModel
 
 app = FastAPI(title="Ride Duration API")
 model = ArabicSentimentModel()
