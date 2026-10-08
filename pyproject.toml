@@ -9,3 +9,8 @@ dependencies = [
     "fastapi>=0.141.1",
     "mlflow>=3.16.0",
 ]
+
+[tool.uv.workspace]
+members = [
+    "notebooks",
+]

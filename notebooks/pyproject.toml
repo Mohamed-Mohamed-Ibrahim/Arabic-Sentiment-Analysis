@@ -1,0 +1,35 @@
+[project]
+name = "notebooks"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "arabert>=0.1.4",
+    "dash>=4.4.1",
+    "ipykernel>=7.3.0",
+    "matplotlib>=3.10.9",
+    "numpy==1.26.4",
+    "onnx==1.18",
+    "onnxruntime<1.24",
+    "pandas>=2.3.3",
+    "plotly>=7.1.0",
+    "pmdarima>=2.1.1",
+    "portalocker>=2.0.0",
+    "scikit-learn>=1.7.2",
+    "seaborn==0.9.0",
+    "torch==2.3.0",
+    "torchdata==0.9.0",
+    "torchtext==0.18.0",
+    "transformers>=5.19.0",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchdata = { index = "pytorch-cpu" }
+torchtext = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
