@@ -1,4 +1,11 @@
+import torch
+import numpy as np
+import onnxruntime as ort
 from abc import ABC, abstractmethod
+from transformers import AutoTokenizer
+
+
+
 
 
 class ModelBase(ABC):
@@ -7,8 +14,30 @@ class ModelBase(ABC):
 
 
 class ArabicSentimentModel(ModelBase):
-    def __init__(self):
+    def __init__(self, model_name="aubmindlab/bert-base-arabertv02"):
         super().__init__()
+        self.session = ort.InferenceSession("notebooks/model.onnx")
+        self.vocab = torch.load("notebooks/vocab.pt")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.classes = {0: "Negative", 1: "Positive" }
+
+    def text_pipeline(self, text):
+        return [self.vocab[token] for token in self.tokenizer.tokenize(str(text).lower())]
+
     
-    def predict(X):
-        pass
+    def predict(self, X):
+        text_list, offsets = [], [0]
+        for text in X:
+            tokens = self.text_pipeline(text)
+            if not tokens:
+                tokens = [0]
+            text_list.extend(tokens)
+            offsets.append(len(tokens))
+
+        onnx_text = np.array(text_list, dtype=np.int64)
+        onnx_offsets = np.array(offsets[:-1], dtype=np.int64).cumsum()
+
+        inputs = {"text": onnx_text, "offsets": onnx_offsets}
+        logits = self.session.run(None, inputs)[0]
+        pred = np.argmax(logits, axis=1)[0]
+        return self.classes[pred]

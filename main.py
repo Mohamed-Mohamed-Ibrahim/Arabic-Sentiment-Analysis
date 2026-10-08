@@ -10,19 +10,18 @@ model = ArabicSentimentModel()
 
 # ── Schemas ─────────────────────────────────────────
 class PredictRequest(BaseModel):
-    distance_km: float = Field(..., gt=0)
-    passengers: int = Field(1, ge=1, le=8)
+    text: str = Field(..., min_length=4, max_length=2000)
 
 
 class PredictResponse(BaseModel):
-    duration_min: float
+    result: str
 
 
 # ── Handlers ────────────────────────────────────────
 @app.post("/predict", response_model=PredictResponse)
 async def predict(req: PredictRequest):
-    d = model.predict([req.distance_km, req.passengers])
-    return PredictResponse(duration_min=round(d, 2))
+    res = model.predict(req.text)
+    return PredictResponse(result=res)
 
 
 @app.get("/health")
