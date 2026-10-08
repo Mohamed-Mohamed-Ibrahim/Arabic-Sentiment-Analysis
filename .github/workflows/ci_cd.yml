@@ -27,11 +27,6 @@ jobs:
   #       with:
   #         python-version: '3.11'
   #         enable-cache: true
-      
-  #     - name: Sync dependencies
-  #       working-directory: ./notebooks
-  #       run: |
-  #         uv sync
 
   #     - name: Run tests
   #       run: |

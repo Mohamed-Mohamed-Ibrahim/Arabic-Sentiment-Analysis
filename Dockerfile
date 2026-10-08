@@ -7,8 +7,6 @@ ENV PYTHONUNBUFFERED=1
 
 COPY pyproject.toml .
 RUN pip install -e . 
-COPY notebooks/pyproject.toml .
-RUN pip install -e . 
 
 COPY . .
 
