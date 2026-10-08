@@ -224,3 +224,5 @@ mlartifacts/
 # *.onnx
 # *.pth
 # *.pt
+/model.pth
+/model.onnx

@@ -1,0 +1,58 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python notebooks/prepare.py
+    deps:
+    - path: data/MSA Dataset.csv
+      hash: md5
+      md5: 76c7390ffb33bc987c4bec67889971ef
+      size: 1001699
+    - path: notebooks/prepare.py
+      hash: md5
+      md5: 5fd448a4e7a7812800a83c6cd1eabe17
+      size: 2097
+    params:
+      params.yaml:
+        prepare:
+          seed: 42
+          split_ratio: 0.8
+          samples: 10
+    outs:
+    - path: data/prepared
+      hash: md5
+      md5: 1bb72985cbf0919a88b4e632b4507341.dir
+      size: 12120
+      nfiles: 4
+  train:
+    cmd: python notebooks/train.py
+    deps:
+    - path: data/prepared
+      hash: md5
+      md5: 1bb72985cbf0919a88b4e632b4507341.dir
+      size: 12120
+      nfiles: 4
+    - path: notebooks/train.py
+      hash: md5
+      md5: a2e51eb70243ea956b03d99bbba97bc3
+      size: 6341
+    params:
+      params.yaml:
+        train:
+          batch_size: 64
+          epochs: 10
+          lr: 0.01
+          embed_dim: 64
+          seed: 42
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 35d830c4e5670f9805bb172853e4bbf7
+      size: 48
+    - path: model.onnx
+      hash: md5
+      md5: 0b3474d276e9d52b7ab9fbb380a52732
+      size: 82860
+    - path: model.pth
+      hash: md5
+      md5: 7ccba3ca423f0e34ff7a74bdc21a5df5
+      size: 81030
