@@ -12,11 +12,11 @@ class ModelBase(ABC):
 
 
 class ArabicSentimentModel(ModelBase):
-    def __init__(self, model_name="aubmindlab/bert-base-arabertv02"):
+    def __init__(self, tokenizer_model_name="aubmindlab/bert-base-arabertv02", vocab_file_path="notebooks/vocab.pt", model_file_path="notebooks/model.onnx"):
         super().__init__()
-        self.session = ort.InferenceSession("notebooks/model.onnx")
-        self.vocab = torch.load("notebooks/vocab.pt")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.session = ort.InferenceSession(model_file_path)
+        self.vocab = torch.load(vocab_file_path)
+        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_model_name)
         self.classes = {0: "Negative", 1: "Positive"}
 
     def text_pipeline(self, text):

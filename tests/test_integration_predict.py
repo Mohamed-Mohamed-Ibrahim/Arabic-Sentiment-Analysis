@@ -5,6 +5,7 @@ def test_prediction_positive(base_url):
     url = f"{base_url}/predict"
     payload = {
         "text": "انا احب هذا المنتج",
+        # "text": "good",
     }
     
     response = requests.post(url, json=payload)
