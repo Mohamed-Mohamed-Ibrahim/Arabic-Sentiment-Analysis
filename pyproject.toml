@@ -5,13 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "bentoml>=1.4.39",
     "coverage>=7.16.2",
     "dvc>=3.67.1",
     "fastapi>=0.141.1",
+    "locust>=2.46.0",
     "mlflow>=3.16.0",
     "onnxruntime>=1.23.2",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
+    "python-dotenv>=1.2.3",
     "requests>=2.28.1",
     "ruff>=0.16.10",
     "transformers>=5.19.0",

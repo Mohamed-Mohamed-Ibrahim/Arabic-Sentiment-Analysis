@@ -29,10 +29,14 @@ class ArabicSentimentModel(ModelBase):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_model_name)
         self.classes = {0: "Negative", 1: "Positive"}
         self.version = params["version"]
+        self.max_token_val = 7968
 
-    def text_pipeline(self, text):
+    def text_pipeline(self, text: str) -> list[int]:
         return [
-            self.vocab.get(token, 0)
+            # self.vocab.get(token, 0)
+            0
+            if self.vocab.get(token, 0) > self.max_token_val
+            else self.vocab.get(token, 0)
             for token in self.tokenizer.tokenize(str(text).lower())
         ]
 
