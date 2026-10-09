@@ -16,9 +16,6 @@ stages:
       - notebooks/train.py
     params:
       - train
-    outs:
-      - model.pth
-      - model.onnx
     metrics:
       - metrics.json:
           cache: false

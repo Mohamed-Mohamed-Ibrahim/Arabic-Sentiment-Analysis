@@ -93,8 +93,8 @@ def main():
     BATCH_SIZE = params["train"]["batch_size"]
     EMBED_DIM = params["train"]["embed_dim"]
     SPLIT_RATIO = params["prepare"]["split_ratio"]
-    SAMPLES = params["prepare"]["samples"]
-
+    SAMPLES = params["samples"]
+    version = params["version"]
 
     torch.manual_seed(SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -129,7 +129,16 @@ def main():
     mlflow.set_experiment("Model Training 1")
     with mlflow.start_run():
         mlflow.log_params(
-            {"lr": LR, "optimizer": "SGD", "epochs": EPOCHS, "emsize": EMBED_DIM, "seed": SEED, "split_ratio": SPLIT_RATIO, "samples": SAMPLES}
+            {
+                "lr": LR,
+                "optimizer": "SGD",
+                "epochs": EPOCHS,
+                "emsize": EMBED_DIM,
+                "seed": SEED,
+                "split_ratio": SPLIT_RATIO,
+                "samples": SAMPLES,
+                "version": version,
+            }
         )
 
         best_val_acc = -1
@@ -159,17 +168,17 @@ def main():
             print(val_acc, best_val_acc, cum_loss)
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
-                torch.save(model.state_dict(), "model.pth")
+                mlflow.pytorch.log_model(
+                    pytorch_model=model,
+                    artifact_path="model",
+                    serialization_format="pickle",
+                )
 
         test_acc, _ = evaluate(model, test_loader, device)
         mlflow.log_metric("test_accuracy", test_acc)
 
         with open("metrics.json", "w") as f:
             json.dump({"test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
-
-        # model.load_state_dict(torch.load("model.pth"))
-        # model.eval()
-        
 
 
 if __name__ == "__main__":

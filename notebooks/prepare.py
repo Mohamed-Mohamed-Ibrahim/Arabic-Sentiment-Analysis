@@ -42,7 +42,7 @@ def main():
 
     SEED = params["prepare"]["seed"]
     SPLIT_RATIO = params["prepare"]["split_ratio"]
-    SAMPLES = params["prepare"]["samples"]
+    SAMPLES = params["samples"]
 
     torch.manual_seed(SEED)
 

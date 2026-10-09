@@ -221,8 +221,6 @@ __marimo__/
 mlartifacts/
 
 # Models
-# *.onnx
-# *.pth
-# *.pt
-/model.pth
-/model.onnx
+*.onnx
+*.pth
+*.pt

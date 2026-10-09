@@ -14,14 +14,16 @@ class PredictRequest(BaseModel):
 
 
 class PredictResponse(BaseModel):
-    result: str
+    label: str
+    confidence: float
+    model_version: str
 
 
 # ── Handlers ────────────────────────────────────────
 @app.post("/predict", response_model=PredictResponse)
 async def predict(req: PredictRequest):
-    res = model.predict(req.text)
-    return PredictResponse(result=res)
+    res, prob, version = model.predict(req.text)
+    return PredictResponse(label=res, confidence=round(prob, 5), model_version=version)
 
 
 @app.get("/health")

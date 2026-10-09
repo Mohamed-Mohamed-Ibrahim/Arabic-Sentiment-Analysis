@@ -1,2 +1,2 @@
-run_id: 498a842697514c6bbdf5fccf53337e34
-test_accuracy: 0.54
+run_id: baf99410957a40f185e2bffa6bbeb003
+test_accuracy: 0.47

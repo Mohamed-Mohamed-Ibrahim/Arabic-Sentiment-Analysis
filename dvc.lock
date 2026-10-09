@@ -9,14 +9,13 @@ stages:
       size: 1001699
     - path: notebooks/prepare.py
       hash: md5
-      md5: a1758ee9085b876f680395db9e7261cc
-      size: 2144
+      md5: 6ae05969be81a2266ab3281bb5d6c9d3
+      size: 2125
     params:
       params.yaml:
         prepare:
           seed: 42
           split_ratio: 0.8
-          samples: 1000
     outs:
     - path: data/prepared
       hash: md5
@@ -33,43 +32,34 @@ stages:
       nfiles: 4
     - path: notebooks/train.py
       hash: md5
-      md5: 8bb965a72875c93876b4da046f154c54
-      size: 6532
+      md5: 72dbbcb7fe55d06940ede3deddd1c285
+      size: 6198
     params:
       params.yaml:
         train:
-          samples: 1000
           batch_size: 1
           epochs: 10
           lr: 0.1
-          embed_dim: 128
+          embed_dim: 64
           seed: 42
     outs:
     - path: metrics.json
       hash: md5
-      md5: ae6792a38419b40fa083cfe63d06827d
+      md5: 82a12d43738be564dd075c13a354af83
       size: 50
-    - path: model.onnx
-      hash: md5
-      md5: 65070093159828c8ea8a7dbfa3719568
-      size: 4084661
-    - path: model.pth
-      hash: md5
-      md5: 856841f4e60915ad6790ca2681107400
-      size: 4082822
   promote:
     cmd: python notebooks/promote.py
     deps:
     - path: metrics.json
       hash: md5
-      md5: ae6792a38419b40fa083cfe63d06827d
+      md5: 82a12d43738be564dd075c13a354af83
       size: 50
     - path: notebooks/promote.py
       hash: md5
-      md5: 361d0db910d72c7d3159eb850ff67468
-      size: 1463
+      md5: 24f6b35bb51234f9a8627cf87aca0cba
+      size: 2348
     outs:
     - path: best_run.txt
       hash: md5
-      md5: 4347ef2b5c4b66720956400f875b8d35
+      md5: 74c2693dc23e0808b546f7c9ee1ef643
       size: 61

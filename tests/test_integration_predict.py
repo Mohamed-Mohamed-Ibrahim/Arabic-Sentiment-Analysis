@@ -13,7 +13,7 @@ def test_prediction_positive(base_url):
     assert response.status_code == 200
     
     response_data = response.json()
-    assert response_data["result"] == "Positive"
+    assert response_data["label"] == "Positive"
 
 def test_prediction_negative(base_url):
     url = f"{base_url}/predict"
@@ -27,4 +27,4 @@ def test_prediction_negative(base_url):
     assert response.status_code == 200
     
     response_data = response.json()
-    assert response_data["result"] == "Negative"
+    assert response_data["label"] == "Negative"

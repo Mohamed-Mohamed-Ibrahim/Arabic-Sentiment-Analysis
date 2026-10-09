@@ -62,7 +62,7 @@ def main():
     torch.onnx.export(
         model,
         (dummy_text, dummy_offsets),
-        "model.onnx",
+        "notebooks/model.onnx",
         opset_version=17,
         input_names=["text", "offsets"],
         output_names=["output"],
