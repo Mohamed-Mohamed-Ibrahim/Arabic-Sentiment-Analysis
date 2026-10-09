@@ -1,15 +1,12 @@
 from __future__ import annotations
 
 import pickle
-from dotenv import load_dotenv
 
-load_dotenv()
 import bentoml
 import numpy as np
 import onnxruntime as ort
 import yaml
 from pydantic import BaseModel, Field
-
 
 with open("params.yaml", "r") as f:
     params = yaml.safe_load(f)
@@ -25,7 +22,9 @@ class PredictResponse(BaseModel):
     model_version: str
 
 
-@bentoml.service(name="arabic_sentiment_service", resources={"cpu": "2"}, http={"port": 8000})
+@bentoml.service(
+    name="arabic_sentiment_service", resources={"cpu": "2"}, http={"port": 8000}
+)
 class ArabicSentimentModel:
     def __init__(
         self,
