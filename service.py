@@ -5,6 +5,7 @@ import pickle
 import bentoml
 import numpy as np
 import onnxruntime as ort
+import scipy
 import yaml
 from pydantic import BaseModel, Field
 
@@ -77,12 +78,10 @@ class ArabicSentimentModel:
 
         for idx, pred_idx in enumerate(preds):
             label = self.classes[pred_idx]
-            prob = float(logits[idx][pred_idx])
+            prob = scipy.special.softmax(logits, axis=1)[0][pred_idx]
 
             responses.append(
-                PredictResponse(
-                    label=label, confidence=round(prob, 5), model_version=self.version
-                )
+                PredictResponse(label=label, confidence=prob, version=self.version)
             )
 
         return responses

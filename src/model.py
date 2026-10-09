@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import onnxruntime as ort
+import scipy
 import yaml
 from transformers import AutoTokenizer
 
@@ -55,4 +56,4 @@ class ArabicSentimentModel(ModelBase):
         inputs = {"text": onnx_text, "offsets": onnx_offsets}
         logits = self.session.run(None, inputs)[0]
         pred = np.argmax(logits, axis=1)[0]
-        return self.classes[pred], logits[0][pred], self.version
+        return self.classes[pred], scipy.special.softmax(logits, axis=1)[0][pred], self.version
