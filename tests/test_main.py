@@ -13,6 +13,7 @@ async def test_predict_positive(base_url):
 
     assert data.label == "Positive"
 
+
 @pytest.mark.asyncio
 async def test_predict_negative(base_url):
 
@@ -22,6 +23,7 @@ async def test_predict_negative(base_url):
     data = await predict(req)
 
     assert data.label == "Negative"
+
 
 @pytest.mark.asyncio
 async def test_health(base_url):

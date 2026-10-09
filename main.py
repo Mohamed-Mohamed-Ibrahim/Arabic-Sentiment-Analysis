@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
 from src.model import ArabicSentimentModel
 
@@ -22,7 +23,7 @@ class PredictResponse(BaseModel):
 # ── Handlers ────────────────────────────────────────
 @app.post("/predict", response_model=PredictResponse)
 async def predict(req: PredictRequest):
-    res, prob, version = model.predict(req.text)
+    res, prob, version = await run_in_threadpool(model.predict, req.text)
     return PredictResponse(label=res, confidence=round(prob, 5), model_version=version)
 
 
