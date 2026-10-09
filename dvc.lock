@@ -40,26 +40,26 @@ stages:
           batch_size: 1
           epochs: 10
           lr: 0.1
-          embed_dim: 64
+          embed_dim: 128
           seed: 42
     outs:
     - path: metrics.json
       hash: md5
-      md5: 82a12d43738be564dd075c13a354af83
+      md5: ae6792a38419b40fa083cfe63d06827d
       size: 50
   promote:
     cmd: python notebooks/promote.py
     deps:
     - path: metrics.json
       hash: md5
-      md5: 82a12d43738be564dd075c13a354af83
+      md5: ae6792a38419b40fa083cfe63d06827d
       size: 50
     - path: notebooks/promote.py
       hash: md5
-      md5: 24f6b35bb51234f9a8627cf87aca0cba
-      size: 2348
+      md5: 845f52930b5c5a75434aa41d05f06050
+      size: 2347
     outs:
     - path: best_run.txt
       hash: md5
-      md5: 74c2693dc23e0808b546f7c9ee1ef643
+      md5: 8a04effbf3d5948163e1a51de1268dc2
       size: 61
