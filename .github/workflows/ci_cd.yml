@@ -2,7 +2,7 @@ name: Lint Python Code
 
 on:
   push:
-    branches: [ "main", "Module-2" ]
+    branches: [ "main", "Module-3" ]
   pull_request:
     branches: [ "main" ]
 
