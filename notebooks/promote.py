@@ -1,5 +1,7 @@
 import mlflow
+import bentoml
 import torch
+import onnx
 from mlflow.tracking import MlflowClient
 
 EXPERIMENT_NAME = "Model Training 1"
@@ -70,6 +72,19 @@ def main():
             "text": {0: "total_tokens"},
             "offsets": {0: "batch_size"},
             "output": {0: "batch_size"},
+        },
+    )
+
+    onnx_model = onnx.load("notebooks/model.onnx")
+
+    bentoml.onnx.save_model(
+        "arabic_sentiment_model",
+        onnx_model,
+        signatures={
+            "run": {
+                "batchable": True,
+                "batch_dim": 0,
+            }
         },
     )
 
