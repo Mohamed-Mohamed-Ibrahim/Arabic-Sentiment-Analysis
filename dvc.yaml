@@ -16,6 +16,8 @@ stages:
       - notebooks/train.py
     params:
       - train
+    outs:
+      - training_baseline.json
     metrics:
       - metrics.json:
           cache: false

@@ -72,7 +72,7 @@ def evaluate(model, dataloader, device):
     total_acc, total_count = 0, 0
     cum_loss = 0
     criterion = nn.CrossEntropyLoss()
-    
+
     with torch.no_grad():
         for label, text, offsets in dataloader:
             label, text, offsets = label.to(device), text.to(device), offsets.to(device)
@@ -176,6 +176,32 @@ def main():
 
         test_acc, _ = evaluate(model, test_loader, device)
         mlflow.log_metric("test_accuracy", test_acc)
+
+        baseline_samples = train_data[:1000]
+        baseline_loader = DataLoader(
+            baseline_samples,
+            batch_size=BATCH_SIZE,
+            shuffle=False,
+            collate_fn=collate_fn,
+        )
+        text_lengths = [len(str(text)) for _, text in baseline_samples]
+        confidence_scores = []
+        model.eval()
+        with torch.no_grad():
+            for _, text, offsets in baseline_loader:
+                logits = model(text.to(device), offsets.to(device))
+                confidence_scores.extend(
+                    torch.softmax(logits, dim=1).max(dim=1).values.cpu().tolist()
+                )
+
+        with open("training_baseline.json", "w") as f:
+            json.dump(
+                {
+                    "text_lengths": text_lengths,
+                    "confidence_scores": confidence_scores,
+                },
+                f,
+            )
 
         with open("metrics.json", "w") as f:
             json.dump({"test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
