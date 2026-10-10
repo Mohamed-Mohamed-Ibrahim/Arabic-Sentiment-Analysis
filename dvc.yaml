@@ -17,7 +17,7 @@ stages:
     params:
       - train
     outs:
-      - training_baseline.json
+      - data/training_baseline.json
     metrics:
       - metrics.json:
           cache: false
