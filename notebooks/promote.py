@@ -47,10 +47,10 @@ def main():
     client.set_tag(run_id=best_run_id, key="status", value="production")
     print("Promoted run to status='production'.")
 
-    with open("best_run.txt", "w") as f:
+    with open("data/best_run.txt", "w") as f:
         f.write(f"run_id: {best_run_id}\n{METRIC_NAME}: {best_score}\n")
 
-    with open("best_run.txt", "r") as f:
+    with open("data/best_run.txt", "r") as f:
         for line in f:
             if line.startswith("run_id:"):
                 run_id = line.split(":", 1)[1].strip()
