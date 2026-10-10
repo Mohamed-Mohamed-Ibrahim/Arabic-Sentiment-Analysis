@@ -24,15 +24,11 @@ REQUEST_LATENCY = Histogram(
 production_text_lengths = deque(maxlen=1000)
 production_confidence_scores = deque(maxlen=1000)
 
-BASELINE_PATH = Path(__file__).with_name("training_baseline.json")
-try:
-    with BASELINE_PATH.open() as baseline_file:
-        training_baseline = json.load(baseline_file)
-    TRAINING_TEXT_LENGTHS = training_baseline["text_lengths"]
-    TRAINING_CONFIDENCE_SCORES = training_baseline["confidence_scores"]
-except FileNotFoundError:
-    TRAINING_TEXT_LENGTHS = []
-    TRAINING_CONFIDENCE_SCORES = []
+BASELINE_PATH = Path("data/training_baseline.json")
+with BASELINE_PATH.open() as baseline_file:
+    training_baseline = json.load(baseline_file)
+TRAINING_TEXT_LENGTHS = training_baseline["text_lengths"]
+TRAINING_CONFIDENCE_SCORES = training_baseline["confidence_scores"]
 
 
 # ── Schemas ─────────────────────────────────────────

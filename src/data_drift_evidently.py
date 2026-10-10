@@ -9,10 +9,9 @@ import requests
 from evidently.metrics import ColumnDriftMetric
 from evidently.report import Report
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-BASELINE_PATH = PROJECT_ROOT / "data" / "training_baseline.json"
-PREDICTIONS_DIR = PROJECT_ROOT / "data" / "scoring" / "output"
-REPORT_PATH = PROJECT_ROOT / "reports" / "drift_report.html"
+BASELINE_PATH = Path("data/training_baseline.json")
+PREDICTIONS_DIR = Path("data/scoring/output")
+REPORT_PATH = Path("reports/drift_report.html")
 GAUGES_URL = os.environ.get("GAUGES_URL", "http://localhost:8000/internal/gauges")
 
 
