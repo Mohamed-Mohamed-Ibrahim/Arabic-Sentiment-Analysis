@@ -194,7 +194,7 @@ def main():
                     torch.softmax(logits, dim=1).max(dim=1).values.cpu().tolist()
                 )
 
-        with open("training_baseline.json", "w") as f:
+        with open("data/training_baseline.json", "w") as f:
             json.dump(
                 {
                     "text_lengths": text_lengths,
@@ -203,8 +203,6 @@ def main():
                 f,
             )
 
-        with open("metrics.json", "w") as f:
-            json.dump({"data/test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
 
 
 if __name__ == "__main__":
