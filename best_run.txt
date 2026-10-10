@@ -1,2 +1,0 @@
-run_id: 7bd424cad5e546789323589a81835a31
-test_accuracy: 0.54

@@ -40,13 +40,13 @@ stages:
           batch_size: 1
           epochs: 10
           lr: 0.1
-          embed_dim: 8
+          embed_dim: 256
           seed: 42
     outs:
     - path: data/training_baseline.json
       hash: md5
-      md5: e33ee9a314b57fcc4e2d875eadd487a5
-      size: 19886
+      md5: d886aa658947288e58bede80ad39fc9f
+      size: 19868
   promote:
     cmd: python notebooks/promote.py
     deps:
