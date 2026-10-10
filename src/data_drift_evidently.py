@@ -11,7 +11,7 @@ from evidently.report import Report
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 BASELINE_PATH = PROJECT_ROOT / "data" / "training_baseline.json"
-PREDICTIONS_PATH = PROJECT_ROOT / "data" / "scoring" / "output" / "predictions.jsonl"
+PREDICTIONS_DIR = PROJECT_ROOT / "data" / "scoring" / "output"
 REPORT_PATH = PROJECT_ROOT / "reports" / "drift_report.html"
 GAUGES_URL = os.environ.get("GAUGES_URL", "http://localhost:8000/internal/gauges")
 
@@ -33,20 +33,32 @@ def load_reference(path: Path = BASELINE_PATH) -> pd.DataFrame:
     )
 
 
-def load_current(path: Path = PREDICTIONS_PATH, limit: int = 1000) -> pd.DataFrame:
+def _earliest_predictions_file(path: Path) -> Path:
+    if path.is_file():
+        return path
+
+    dated_files = sorted(path.glob("predictions_????-??-??.jsonl"))
+    if dated_files:
+        return dated_files[0]
+    
+    raise FileNotFoundError(f"No prediction JSONL files found in {path}")
+
+
+def load_current(path: Path = PREDICTIONS_DIR, limit: int = 1000) -> pd.DataFrame:
+    predictions_path = _earliest_predictions_file(path)
     records: deque[dict[str, Any]] = deque(maxlen=limit)
-    with path.open(encoding="utf-8") as predictions_file:
+    with predictions_path.open(encoding="utf-8") as predictions_file:
         for line_number, line in enumerate(predictions_file, start=1):
             if line.strip():
                 try:
                     records.append(json.loads(line))
                 except json.JSONDecodeError as error:
                     raise ValueError(
-                        f"Invalid JSON on line {line_number} of {path}"
+                        f"Invalid JSON on line {line_number} of {predictions_path}"
                     ) from error
 
     if not records:
-        raise ValueError(f"No prediction records found in {path}")
+        raise ValueError(f"No prediction records found in {predictions_path}")
 
     return pd.DataFrame(
         {
