@@ -224,5 +224,4 @@ mlartifacts/
 *.onnx
 *.pth
 *.pt
-/data/training_baseline.json
 best_run.txt
