@@ -32,32 +32,24 @@ stages:
       nfiles: 4
     - path: notebooks/train.py
       hash: md5
-      md5: b6871a0fe877fa7c7841902420bca9ab
-      size: 7091
+      md5: 14297f620dde71142fa9b8af2c2062bb
+      size: 6962
     params:
       params.yaml:
         train:
           batch_size: 1
           epochs: 10
           lr: 0.1
-          embed_dim: 128
+          embed_dim: 8
           seed: 42
     outs:
-    - path: metrics.json
+    - path: data/training_baseline.json
       hash: md5
-      md5: ae6792a38419b40fa083cfe63d06827d
-      size: 50
-    - path: training_baseline.json
-      hash: md5
-      md5: c9f4b5f55ad59bb8851a11f6d2010afa
-      size: 19872
+      md5: e33ee9a314b57fcc4e2d875eadd487a5
+      size: 19886
   promote:
     cmd: python notebooks/promote.py
     deps:
-    - path: metrics.json
-      hash: md5
-      md5: ae6792a38419b40fa083cfe63d06827d
-      size: 50
     - path: notebooks/promote.py
       hash: md5
       md5: b6cf9418a006800aa363fb0e13677629
@@ -65,5 +57,5 @@ stages:
     outs:
     - path: best_run.txt
       hash: md5
-      md5: 1e026e5ff5c1fe4752960978872ce9f0
+      md5: f00b2aead89b220585556a0197039097
       size: 61

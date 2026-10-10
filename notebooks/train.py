@@ -204,7 +204,7 @@ def main():
             )
 
         with open("metrics.json", "w") as f:
-            json.dump({"test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
+            json.dump({"data/test_accuracy": test_acc, "best_val_accuracy": best_val_acc}, f)
 
 
 if __name__ == "__main__":
