@@ -3,3 +3,6 @@
 /English Dataset.csv
 /E_MSA_BDs-PR-SA.csv
 *
+!/scoring/
+!/scoring/output/
+!/scoring/output/predictions.jsonl
