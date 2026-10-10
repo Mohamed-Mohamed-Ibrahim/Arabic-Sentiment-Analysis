@@ -9,6 +9,8 @@ import scipy
 import yaml
 from pydantic import BaseModel, Field
 
+from src.scoring import schedule_prediction
+
 with open("params.yaml", "r") as f:
     params = yaml.safe_load(f)
 
@@ -55,7 +57,7 @@ class ArabicSentimentModel:
     @bentoml.api(
         batchable=True,
     )
-    def predict(self, requests: list[PredictRequest]) -> list[PredictResponse]:
+    async def predict(self, requests: list[PredictRequest]) -> list[PredictResponse]:
         text_list = []
         lengths = []
 
@@ -78,10 +80,13 @@ class ArabicSentimentModel:
 
         for idx, pred_idx in enumerate(preds):
             label = self.classes[pred_idx]
-            prob = scipy.special.softmax(logits, axis=1)[0][pred_idx]
+            prob = scipy.special.softmax(logits, axis=1)[idx][pred_idx]
 
             responses.append(
-                PredictResponse(label=label, confidence=prob, version=self.version)
+                PredictResponse(
+                    label=label, confidence=prob, model_version=self.version
+                )
             )
+            schedule_prediction(requests[idx].text, label, prob, self.version)
 
         return responses
