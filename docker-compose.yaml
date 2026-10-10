@@ -8,7 +8,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./data/scoring/output:/data/scoring/output
+      - ./data/scoring/output:/app/data/scoring/output
     networks:
       - monitoring
 
