@@ -1,18 +1,39 @@
 from __future__ import annotations
 
+import json
 import pickle
+import time
+from collections import deque
+from pathlib import Path
+from typing import Any
 
 import bentoml
 import numpy as np
 import onnxruntime as ort
 import scipy
 import yaml
+from prometheus_client import CONTENT_TYPE_LATEST, Gauge, Histogram, generate_latest
 from pydantic import BaseModel, Field
+from starlette.responses import Response
 
 from src.scoring import schedule_prediction
 
 with open("params.yaml", "r") as f:
     params = yaml.safe_load(f)
+
+DRIFT_GAUGE = Gauge("feature_psi_score", "PSI drift score per feature", ["feature"])
+REQUEST_LATENCY = Histogram(
+    "api_request_latency_seconds", "End-to-end API latency", ["endpoint", "status"]
+)
+
+production_text_lengths = deque(maxlen=1000)
+production_confidence_scores = deque(maxlen=1000)
+
+BASELINE_PATH = Path("data/training_baseline.json")
+with BASELINE_PATH.open() as baseline_file:
+    training_baseline = json.load(baseline_file)
+TRAINING_TEXT_LENGTHS = training_baseline["text_lengths"]
+TRAINING_CONFIDENCE_SCORES = training_baseline["confidence_scores"]
 
 
 class PredictRequest(BaseModel):
@@ -54,10 +75,28 @@ class ArabicSentimentModel:
             for token in self.tokenizer.tokenize(str(text).lower())
         ]
 
+    @bentoml.api(route="/health")
+    def health(self) -> dict[str, str]:
+        return {"status": "healthy"}
+
+    @bentoml.api(route="/internal/gauges")
+    def publish_gauges(self, payload: dict[str, Any]) -> dict[str, int]:
+        n = 0
+        for feature, value in (payload.get("feature_psi") or {}).items():
+            DRIFT_GAUGE.labels(feature=feature).set(float(value))
+            n += 1
+        return {"published": n}
+
+    @bentoml.api(route="/metrics")
+    def metrics(self) -> Any:
+        return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
     @bentoml.api(
+        route="/predict",
         batchable=True,
     )
     async def predict(self, requests: list[PredictRequest]) -> list[PredictResponse]:
+        t0 = time.perf_counter()
         text_list = []
         lengths = []
 
@@ -67,6 +106,7 @@ class ArabicSentimentModel:
                 tokens = [0]
             text_list.extend(tokens)
             lengths.append(len(tokens))
+            production_text_lengths.append(len(req.text))
 
         onnx_text = np.array(text_list, dtype=np.int64)
         offsets = [0] + lengths[:-1]
@@ -81,6 +121,7 @@ class ArabicSentimentModel:
         for idx, pred_idx in enumerate(preds):
             label = self.classes[pred_idx]
             prob = scipy.special.softmax(logits, axis=1)[idx][pred_idx]
+            production_confidence_scores.append(prob)
 
             responses.append(
                 PredictResponse(
@@ -89,4 +130,7 @@ class ArabicSentimentModel:
             )
             schedule_prediction(requests[idx].text, label, prob, self.version)
 
+        REQUEST_LATENCY.labels(endpoint="/predict", status="200").observe(
+            time.perf_counter() - t0
+        )
         return responses
