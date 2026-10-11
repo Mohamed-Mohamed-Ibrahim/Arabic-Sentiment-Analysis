@@ -7,6 +7,8 @@ import scipy
 import yaml
 from transformers import AutoTokenizer
 
+from config import settings
+
 with open("params.yaml", "r") as f:
     params = yaml.safe_load(f)
 
@@ -19,9 +21,9 @@ class ModelBase(ABC):
 class ArabicSentimentModel(ModelBase):
     def __init__(
         self,
-        tokenizer_model_name="aubmindlab/bert-base-arabertv02",
-        vocab_file_path="notebooks/vocab.pkl",
-        model_file_path="notebooks/model.onnx",
+        tokenizer_model_name=settings.MODEL_TOKENIZER,
+        vocab_file_path=str(settings.MODEL_VOCAB_PATH),
+        model_file_path=str(settings.MODEL_ONNX_PATH),
     ):
         super().__init__()
         self.session = ort.InferenceSession(model_file_path)
@@ -56,4 +58,8 @@ class ArabicSentimentModel(ModelBase):
         inputs = {"text": onnx_text, "offsets": onnx_offsets}
         logits = self.session.run(None, inputs)[0]
         pred = np.argmax(logits, axis=1)[0]
-        return self.classes[pred], scipy.special.softmax(logits, axis=1)[0][pred], self.version
+        return (
+            self.classes[pred],
+            scipy.special.softmax(logits, axis=1)[0][pred],
+            self.version,
+        )

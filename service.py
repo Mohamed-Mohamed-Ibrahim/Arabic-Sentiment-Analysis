@@ -4,7 +4,6 @@ import json
 import pickle
 import time
 from collections import deque
-from pathlib import Path
 from typing import Any
 
 import bentoml
@@ -16,6 +15,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, Gauge, Histogram, generate_la
 from pydantic import BaseModel, Field
 from starlette.responses import Response
 
+from config import settings
 from src.scoring import schedule_prediction
 
 with open("params.yaml", "r") as f:
@@ -29,8 +29,7 @@ REQUEST_LATENCY = Histogram(
 production_text_lengths = deque(maxlen=1000)
 production_confidence_scores = deque(maxlen=1000)
 
-BASELINE_PATH = Path("data/training_baseline.json")
-with BASELINE_PATH.open() as baseline_file:
+with settings.BASELINE_PATH.open(encoding="utf-8") as baseline_file:
     training_baseline = json.load(baseline_file)
 TRAINING_TEXT_LENGTHS = training_baseline["text_lengths"]
 TRAINING_CONFIDENCE_SCORES = training_baseline["confidence_scores"]
@@ -47,14 +46,16 @@ class PredictResponse(BaseModel):
 
 
 @bentoml.service(
-    name="arabic_sentiment_service", resources={"cpu": "2"}, http={"port": 8000}
+    name=settings.BENTOML_SERVICE_NAME,
+    resources={"cpu": "2"},
+    http={"port": settings.API_PORT},
 )
 class ArabicSentimentModel:
     def __init__(
         self,
-        tokenizer_model_name="aubmindlab/bert-base-arabertv02",
-        vocab_file_path="notebooks/vocab.pkl",
-        model_file_path="notebooks/model.onnx",
+        tokenizer_model_name=settings.MODEL_TOKENIZER,
+        vocab_file_path=str(settings.MODEL_VOCAB_PATH),
+        model_file_path=str(settings.MODEL_ONNX_PATH),
     ):
         from transformers import AutoTokenizer
 

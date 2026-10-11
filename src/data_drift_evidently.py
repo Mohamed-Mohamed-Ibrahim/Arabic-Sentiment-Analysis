@@ -1,5 +1,4 @@
 import json
-import os
 from collections import deque
 from pathlib import Path
 from typing import Any
@@ -9,10 +8,12 @@ import requests
 from evidently.metrics import ColumnDriftMetric
 from evidently.report import Report
 
-BASELINE_PATH = Path("data/training_baseline.json")
-PREDICTIONS_DIR = Path("data/scoring/output")
-REPORT_PATH = Path("reports/drift_report.html")
-GAUGES_URL = os.environ.get("GAUGES_URL", "http://localhost:8000/internal/gauges")
+from config import settings
+
+BASELINE_PATH = settings.BASELINE_PATH
+PREDICTIONS_DIR = settings.PREDICTIONS_DIR
+REPORT_PATH = settings.REPORT_PATH
+GAUGES_URL = settings.GAUGES_URL
 
 
 def load_reference(path: Path = BASELINE_PATH) -> pd.DataFrame:

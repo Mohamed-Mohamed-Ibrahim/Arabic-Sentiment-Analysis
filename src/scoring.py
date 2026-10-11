@@ -4,7 +4,8 @@ import json
 import logging
 import threading
 from datetime import datetime, timezone
-from pathlib import Path
+
+from config import settings
 
 logger = logging.getLogger(__name__)
 _prediction_tasks: set[asyncio.Task[None]] = set()
@@ -44,7 +45,7 @@ def schedule_prediction(
 def _append_prediction(
     text: str, label: str, confidence: float, model_version: str
 ) -> bool:
-    output_dir = Path("data/scoring/output")
+    output_dir = settings.PREDICTIONS_DIR
     output_dir.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now(timezone.utc)
     output_path = output_dir / f"predictions_{timestamp:%Y-%m-%d}.jsonl"

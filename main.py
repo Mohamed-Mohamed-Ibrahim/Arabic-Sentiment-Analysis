@@ -1,7 +1,6 @@
 import json
 import time
 from collections import deque
-from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, Response
@@ -10,11 +9,16 @@ from prometheus_client import CONTENT_TYPE_LATEST, Gauge, Histogram, generate_la
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
+from config import settings
 from src.model import ArabicSentimentModel
 from src.scoring import schedule_prediction
 
-app = FastAPI(title="Ride Duration API")
-model = ArabicSentimentModel()
+app = FastAPI(title=settings.APP_NAME)
+model = ArabicSentimentModel(
+    tokenizer_model_name=settings.MODEL_TOKENIZER,
+    vocab_file_path=str(settings.MODEL_VOCAB_PATH),
+    model_file_path=str(settings.MODEL_ONNX_PATH),
+)
 
 DRIFT_GAUGE = Gauge("feature_psi_score", "PSI drift score per feature", ["feature"])
 REQUEST_LATENCY = Histogram(
@@ -24,8 +28,7 @@ REQUEST_LATENCY = Histogram(
 production_text_lengths = deque(maxlen=1000)
 production_confidence_scores = deque(maxlen=1000)
 
-BASELINE_PATH = Path("data/training_baseline.json")
-with BASELINE_PATH.open() as baseline_file:
+with settings.BASELINE_PATH.open(encoding="utf-8") as baseline_file:
     training_baseline = json.load(baseline_file)
 TRAINING_TEXT_LENGTHS = training_baseline["text_lengths"]
 TRAINING_CONFIDENCE_SCORES = training_baseline["confidence_scores"]
@@ -83,4 +86,4 @@ def metrics() -> Response:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.API_HOST, port=settings.API_PORT)
