@@ -23,5 +23,5 @@ stages:
     deps:
       - notebooks/promote.py
     outs:
-      - best_run.txt:
+      - data/best_run.txt:
           cache: false

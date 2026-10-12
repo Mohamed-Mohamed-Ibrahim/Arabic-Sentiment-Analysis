@@ -52,10 +52,10 @@ stages:
     deps:
     - path: notebooks/promote.py
       hash: md5
-      md5: b6cf9418a006800aa363fb0e13677629
-      size: 2650
+      md5: 86a82f7492ec755aed89a9558b907f61
+      size: 2660
     outs:
-    - path: best_run.txt
+    - path: data/best_run.txt
       hash: md5
-      md5: f00b2aead89b220585556a0197039097
+      md5: 3b098e0c1c99fa4578cc096de4d153d9
       size: 61
