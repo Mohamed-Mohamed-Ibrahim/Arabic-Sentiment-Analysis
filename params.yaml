@@ -1,5 +1,5 @@
 version: 1.0.0
-samples: 1000
+samples: 10000
 
 prepare:
   seed: 42

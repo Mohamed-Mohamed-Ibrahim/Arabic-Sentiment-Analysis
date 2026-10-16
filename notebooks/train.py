@@ -7,6 +7,7 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
+import torch.nn.functional as F
 import yaml
 
 
@@ -21,23 +22,45 @@ LR = 0.01
 EMBED_DIM = 64
 SEED = 42
 
-
 class TextClassificationModel(nn.Module):
-    def __init__(self, vocab_size, embed_dim, num_class):
+    def __init__(self, vocab_size: int, embed_dim: int = 128, hidden_dim: int = 128, num_class: int = 4, dropout: float = 0.4):
         super().__init__()
-        self.embedding = nn.EmbeddingBag(vocab_size, embed_dim, sparse=False)
-        self.fc = nn.Linear(embed_dim, num_class)
+        # mode='mean' normalizes by sequence length
+        self.embedding = nn.EmbeddingBag(vocab_size, embed_dim, mode='mean', sparse=False)
+        self.norm1 = nn.LayerNorm(embed_dim)
+        
+        # Non-linear feature extractor
+        self.fc1 = nn.Linear(embed_dim, hidden_dim)
+        self.norm2 = nn.LayerNorm(hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim)
+        
+        self.dropout = nn.Dropout(dropout)
+        self.classifier = nn.Linear(hidden_dim, num_class)
+        
         self.init_weights()
 
     def init_weights(self):
-        initrange = 0.5
-        self.embedding.weight.data.uniform_(-initrange, initrange)
-        self.fc.weight.data.uniform_(-initrange, initrange)
-        self.fc.bias.data.zero_()
+        # Xavier uniform keeps variance stable across embedding dimensions
+        nn.init.xavier_uniform_(self.embedding.weight)
+        
+        for layer in [self.fc1, self.fc2]:
+            nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
+            nn.init.zeros_(layer.bias)
+            
+        nn.init.xavier_uniform_(self.classifier.weight)
+        nn.init.zeros_(self.classifier.bias)
 
-    def forward(self, text, offsets):
-        embedded = self.embedding(text, offsets)
-        return self.fc(embedded)
+    def forward(self, text: torch.Tensor, offsets: torch.Tensor) -> torch.Tensor:
+        # text: 1D flat tensor, offsets: 1D boundary indices
+        x = self.embedding(text, offsets)
+        x = self.norm1(x)
+        
+        # Dense block with residual connection
+        h = self.dropout(F.relu(self.fc1(x)))
+        h = self.norm2(h)
+        h = self.dropout(F.relu(self.fc2(h))) + h
+        
+        return self.classifier(h)
 
 
 def get_collate_fn(tokenizer, vocab_dict):
@@ -122,8 +145,10 @@ def main():
     model = TextClassificationModel(len(vocab_dict), EMBED_DIM, num_class).to(device)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=LR)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-2)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, mode='max', factor=0.5, patience=2
+    )
 
     mlflow.set_tracking_uri("http://localhost:5000/")
     mlflow.set_experiment("Model Training 1")
@@ -159,8 +184,8 @@ def main():
                 optimizer.step()
                 cum_loss += loss.item()
 
-            scheduler.step()
             val_acc, val_loss = evaluate(model, val_loader, device)
+            scheduler.step(val_acc)
 
             mlflow.log_metric("train_loss", cum_loss, step=epoch)
             mlflow.log_metric("val_loss", val_loss, step=epoch)
