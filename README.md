@@ -113,7 +113,7 @@ A image comparsion is in `reports/mlflow_coparsion.png`
 The project uses DVC to keep the data and pipeline reproducible.
 
 ```bash
-cd notebooks/ && uv synv && cd ..
+uv sync
 uv run dvc repro -f
 uv run dvc status
 ```
@@ -195,7 +195,7 @@ CI is configured in `.github/workflows/ci_cd.yml` and includes:
 
 ## Canary Rollout
 
-Treated canary rollout on 2 versions of the server with 75/25 percentage. After trying different times the number is nearly correct.
+Treated canary rollout on 2 versions of the server with 75/25 percentage. After trying different times the number is nearly correct by curl /healthz which is found only in BentoML and not Fastapi.
 
 V1: Fastapi
 V2: BentoML
