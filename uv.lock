@@ -333,9 +333,7 @@ wheels = [
 name = "arabic-sentiment-analysis"
 version = "0.1.0"
 source = { virtual = "." }
-
-[package.dev-dependencies]
-dev = [
+dependencies = [
     { name = "bentoml" },
     { name = "coverage" },
     { name = "dvc" },
@@ -353,6 +351,8 @@ dev = [
     { name = "ruff" },
     { name = "transformers" },
 ]
+
+[package.dev-dependencies]
 train = [
     { name = "arabert" },
     { name = "dash" },
@@ -362,7 +362,6 @@ train = [
     { name = "matplotlib", version = "3.11.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "numpy" },
     { name = "onnx" },
-    { name = "onnxruntime" },
     { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or python_full_version >= '3.14'" },
     { name = "pandas", version = "3.0.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' and python_full_version < '3.14'" },
     { name = "plotly" },
@@ -381,9 +380,7 @@ train = [
 ]
 
 [package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
+requires-dist = [
     { name = "bentoml", specifier = ">=1.4.39" },
     { name = "coverage", specifier = ">=7.16.2" },
     { name = "dvc", specifier = ">=3.67.1" },
@@ -400,6 +397,8 @@ dev = [
     { name = "ruff", specifier = ">=0.16.10" },
     { name = "transformers", specifier = ">=5.19.0" },
 ]
+
+[package.metadata.requires-dev]
 train = [
     { name = "arabert", specifier = ">=0.1.4" },
     { name = "dash", specifier = ">=4.4.1" },
@@ -407,7 +406,6 @@ train = [
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "numpy", specifier = "==1.26.4" },
     { name = "onnx", specifier = "==1.18" },
-    { name = "onnxruntime", specifier = "<1.24" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "plotly", specifier = ">=7.1.0" },
     { name = "pmdarima", specifier = ">=2.1.1" },

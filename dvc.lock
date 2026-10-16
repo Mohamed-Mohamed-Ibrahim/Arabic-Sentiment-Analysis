@@ -32,8 +32,8 @@ stages:
       nfiles: 4
     - path: notebooks/train.py
       hash: md5
-      md5: 14297f620dde71142fa9b8af2c2062bb
-      size: 6962
+      md5: 5e041893421d9074ec56a777039e0030
+      size: 7776
     params:
       params.yaml:
         train:
@@ -45,8 +45,8 @@ stages:
     outs:
     - path: data/training_baseline.json
       hash: md5
-      md5: d886aa658947288e58bede80ad39fc9f
-      size: 19868
+      md5: d2a0f994d90dc4d92cb12d16195cd052
+      size: 19979
   promote:
     cmd: python notebooks/promote.py
     deps:

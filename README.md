@@ -31,6 +31,13 @@ flowchart LR
     G --> J
 ```
 
+## Project Notes
+
+- **Dataset:** [Bahraini Dialects Dataset](https://data.mendeley.com/datasets/5rhw2srzjj/1)
+- **Model optimization:** Not implemented in this project. The reason is not having a GPU.
+
+---
+
 ## Quick start
 
 Run the following 3 commands on any machine:
