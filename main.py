@@ -49,7 +49,7 @@ class PredictResponse(BaseModel):
 @app.post("/predict", response_model=PredictResponse)
 async def predict(req: PredictRequest):
     t0 = time.perf_counter()
-    res, prob, version = await run_in_threadpool(model.predict, req.text)
+    res, prob, version = await run_in_threadpool(model.predict, [req.text])
     schedule_prediction(req.text, res, prob, version)
     production_text_lengths.append(len(req.text))
     production_confidence_scores.append(prob)
