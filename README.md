@@ -142,6 +142,7 @@ The project uses DVC to keep the data and pipeline reproducible.
 
 ```bash
 uv sync --all-groups # The reason for this command is due long time taken by syncing normal for just running the main project without training.
+uv run mlflow server --port 5000 # The reason for this command is that mlflow is needed to make successful training.
 uv run dvc repro -f
 uv run dvc status
 ```
