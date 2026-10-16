@@ -6,4 +6,4 @@
 !/scoring/
 !/scoring/output/
 !/scoring/output/predictions.jsonl
-/training_baseline.json
+!/training_baseline.json

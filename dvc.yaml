@@ -16,8 +16,6 @@ stages:
       - notebooks/train.py
     params:
       - train
-    outs:
-      - data/training_baseline.json
   promote:
     cmd: python notebooks/promote.py
     deps:
