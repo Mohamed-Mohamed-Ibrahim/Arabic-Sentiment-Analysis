@@ -145,7 +145,6 @@ uv sync --all-groups # The reason for this command is due long time taken by syn
 uv run dvc repro -f
 uv run dvc status
 ```
-- Note; the reason for cd commands is that I am trying to separete the production from torch dependencies to make docker image building time faster.
 
 This ensures that training and evaluation can be reproduced using the same data and metric configuration.
 
