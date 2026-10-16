@@ -193,6 +193,15 @@ CI is configured in `.github/workflows/ci_cd.yml` and includes:
 - pytest execution
 - Docker build and push workflow
 
+## Canary Rollout
+
+Treated canary rollout on 2 versions of the server with 75/25 percentage. After trying different times the number is nearly correct.
+
+V1: Fastapi
+V2: BentoML
+
+![](./reports/canary.png)
+
 ## Project structure
 
 ```text

@@ -25,11 +25,9 @@ SEED = 42
 class TextClassificationModel(nn.Module):
     def __init__(self, vocab_size: int, embed_dim: int = 128, hidden_dim: int = 128, num_class: int = 4, dropout: float = 0.4):
         super().__init__()
-        # mode='mean' normalizes by sequence length
         self.embedding = nn.EmbeddingBag(vocab_size, embed_dim, mode='mean', sparse=False)
         self.norm1 = nn.LayerNorm(embed_dim)
         
-        # Non-linear feature extractor
         self.fc1 = nn.Linear(embed_dim, hidden_dim)
         self.norm2 = nn.LayerNorm(hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
@@ -40,7 +38,6 @@ class TextClassificationModel(nn.Module):
         self.init_weights()
 
     def init_weights(self):
-        # Xavier uniform keeps variance stable across embedding dimensions
         nn.init.xavier_uniform_(self.embedding.weight)
         
         for layer in [self.fc1, self.fc2]:
@@ -51,11 +48,9 @@ class TextClassificationModel(nn.Module):
         nn.init.zeros_(self.classifier.bias)
 
     def forward(self, text: torch.Tensor, offsets: torch.Tensor) -> torch.Tensor:
-        # text: 1D flat tensor, offsets: 1D boundary indices
         x = self.embedding(text, offsets)
         x = self.norm1(x)
         
-        # Dense block with residual connection
         h = self.dropout(F.relu(self.fc1(x)))
         h = self.norm2(h)
         h = self.dropout(F.relu(self.fc2(h))) + h
