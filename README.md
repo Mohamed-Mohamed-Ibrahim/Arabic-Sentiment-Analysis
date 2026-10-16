@@ -35,6 +35,7 @@ flowchart LR
 
 - **Dataset:** [Bahraini Dialects Dataset](https://data.mendeley.com/datasets/5rhw2srzjj/1)
 - **Model optimization:** Not implemented in this project. The reason is not having a GPU.
+- **Kaggle Notebook:** I ran the code using [kaggle notebook](./notebooks/mlops-final-project-kaggle.ipynb).
 
 ---
 
