@@ -38,6 +38,26 @@ flowchart LR
 
 ---
 
+## Dataset Download
+
+1. Download the data from `https://data.mendeley.com/datasets/5rhw2srzjj/1`.
+    ```bash
+    wget https://data.mendeley.com/public-api/zip/5rhw2srzjj/download/1
+    ```
+2. Unzip the dataset in tmp directory.
+    ```bash
+    unzip 1 -d ./tmp
+    ```
+3. Move the data to `./data` 
+    ```bash
+    cp -r "./tmp/Sentiment Analysis of Multilingual Dataset of Bahraini Dialects, Arabic, and English/Datasets/"* ./data
+    ```
+4. Remove tmp directory
+    ```bash
+    rm -rf ./tmp/ 1
+    ```
+---
+
 ## Quick start
 
 Run the following 3 commands on any machine:
