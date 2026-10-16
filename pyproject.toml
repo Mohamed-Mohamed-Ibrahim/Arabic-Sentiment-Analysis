@@ -37,3 +37,6 @@ dependencies = [
     "torchtext==0.18.0",
     "transformers>=5.19.0",
 ] 
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/*" = ["F401", "F811", "I001"]

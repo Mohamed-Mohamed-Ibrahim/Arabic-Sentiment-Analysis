@@ -6,8 +6,7 @@ from main import PredictRequest, health, predict
 @pytest.mark.asyncio
 async def test_predict_positive(base_url):
 
-    # req = PredictRequest(text="good")
-    req = PredictRequest(text="انا احب هذا المنتج")
+    req = PredictRequest(text="بصراحة التجربة كانت ممتازة وفاقت توقعاتي بكثير، جودة الخامات واضحة جداً من أول استخدام والتغليف كان محكم ونظيف وسرعة التوصيل وخدمة العملاء كانت احترافية وراقية لأبعد حد والمنتج يستاهل كل قرش بالتأكيد هكرر التعامل معاكم مرة تانية.")
 
     data = await predict(req)
 
@@ -17,8 +16,7 @@ async def test_predict_positive(base_url):
 @pytest.mark.asyncio
 async def test_predict_negative(base_url):
 
-    req = PredictRequest(text="string")
-    # req = PredictRequest(text="انا ما راح اشتري هذا المنتج")
+    req = PredictRequest(text= "تجربة سيئة جداً ومخيبة للآمال، المنتج وصل متأخر ومختلف تماماً عن الوصف والصور المعروضة والخامات رديئة جداً والتغليف كان ممزق وخدمة العملاء لا تستجيب تماماً لطلب الاسترجاع، ضياع وقت وفلوس على الفاضي ومستحيل أكررها.")
 
     data = await predict(req)
 

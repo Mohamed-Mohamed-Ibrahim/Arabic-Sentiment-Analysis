@@ -4,8 +4,7 @@ import requests
 def test_prediction_positive(base_url):
     url = f"{base_url}/predict"
     payload = {
-        "text": "انا احب هذا المنتج",
-        # "text": "good",
+        "text":  "بصراحة التجربة كانت ممتازة وفاقت توقعاتي بكثير، جودة الخامات واضحة جداً من أول استخدام والتغليف كان محكم ونظيف وسرعة التوصيل وخدمة العملاء كانت احترافية وراقية لأبعد حد والمنتج يستاهل كل قرش بالتأكيد هكرر التعامل معاكم مرة تانية.",
     }
     
     response = requests.post(url, json=payload)
@@ -18,8 +17,7 @@ def test_prediction_positive(base_url):
 def test_prediction_negative(base_url):
     url = f"{base_url}/predict"
     payload = {
-        # "text": "انا ما راح اشتري هذا المنتج",
-        "text": "string",
+        "text": "تجربة سيئة جداً ومخيبة للآمال، المنتج وصل متأخر ومختلف تماماً عن الوصف والصور المعروضة والخامات رديئة جداً والتغليف كان ممزق وخدمة العملاء لا تستجيب تماماً لطلب الاسترجاع، ضياع وقت وفلوس على الفاضي ومستحيل أكررها.",
     }
     
     response = requests.post(url, json=payload)
