@@ -1,0 +1,15 @@
+service: "service:ArabicSentimentMode"
+labels:
+  owner: bentoml-model
+include:
+  - "*.py"
+  - "params.yaml"
+  - "notebooks/vocab.pkl"
+  - "notebooks/model.onnx"
+python:
+  packages:
+    - numpy
+    - onnxruntime
+    - transformers
+    - pyyaml
+    - pydantic>=2.0

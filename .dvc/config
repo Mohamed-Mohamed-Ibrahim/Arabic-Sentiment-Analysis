@@ -1,0 +1,7 @@
+[core]
+    autostage = true
+    remote = mylocal
+['remote "mydrive"']
+    url = "/run/user/1000/gvfs/google-drive:host=gmail.com,user=mohamedgawad600/0AP3lu70l281XUk9PVA/1oBHzTco9dt6iHjUETfIQHKOoNRh-O3IO/1G6WSXG3uIVewicMPX4ipCFLm3qcv7-xN/1NiWoSpttxU7Ox-Rx0A0vslvvGIja_02P"
+['remote "mylocal"']
+    url = ../remote_data

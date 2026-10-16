@@ -1,0 +1,9 @@
+/Bahraini Dialects Dataset.csv
+/MSA Dataset.csv
+/English Dataset.csv
+/E_MSA_BDs-PR-SA.csv
+*
+!/scoring/
+!/scoring/output/
+!/scoring/output/predictions.jsonl
+!/training_baseline.json

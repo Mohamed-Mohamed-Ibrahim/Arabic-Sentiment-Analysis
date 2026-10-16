@@ -1,0 +1,25 @@
+stages:
+  prepare:
+    cmd: python notebooks/prepare.py
+    deps:
+      - data/MSA Dataset.csv
+      - notebooks/prepare.py
+    params:
+      - prepare
+    outs:
+      - data/prepared
+
+  train:
+    cmd: python notebooks/train.py
+    deps:
+      - data/prepared
+      - notebooks/train.py
+    params:
+      - train
+  promote:
+    cmd: python notebooks/promote.py
+    deps:
+      - notebooks/promote.py
+    outs:
+      - data/best_run.txt:
+          cache: false

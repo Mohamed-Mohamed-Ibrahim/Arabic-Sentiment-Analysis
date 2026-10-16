@@ -1,0 +1,13 @@
+version: 1.0.0
+samples: 10000
+
+prepare:
+  seed: 42
+  split_ratio: 0.8
+
+train:
+  batch_size: 1
+  epochs: 10
+  lr: 0.1
+  embed_dim: 256
+  seed: 42

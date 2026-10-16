@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python notebooks/prepare.py
+    deps:
+    - path: data/MSA Dataset.csv
+      hash: md5
+      md5: 76c7390ffb33bc987c4bec67889971ef
+      size: 1001699
+    - path: notebooks/prepare.py
+      hash: md5
+      md5: 6ae05969be81a2266ab3281bb5d6c9d3
+      size: 2125
+    params:
+      params.yaml:
+        prepare:
+          seed: 42
+          split_ratio: 0.8
+    outs:
+    - path: data/prepared
+      hash: md5
+      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
+      size: 599444
+      nfiles: 4
+  train:
+    cmd: python notebooks/train.py
+    deps:
+    - path: data/prepared
+      hash: md5
+      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
+      size: 599444
+      nfiles: 4
+    - path: notebooks/train.py
+      hash: md5
+      md5: 5e041893421d9074ec56a777039e0030
+      size: 7776
+    params:
+      params.yaml:
+        train:
+          batch_size: 1
+          epochs: 10
+          lr: 0.1
+          embed_dim: 256
+          seed: 42
+    outs:
+    - path: data/training_baseline.json
+      hash: md5
+      md5: d2a0f994d90dc4d92cb12d16195cd052
+      size: 19979
+  promote:
+    cmd: python notebooks/promote.py
+    deps:
+    - path: notebooks/promote.py
+      hash: md5
+      md5: 86a82f7492ec755aed89a9558b907f61
+      size: 2660
+    outs:
+    - path: data/best_run.txt
+      hash: md5
+      md5: 3b098e0c1c99fa4578cc096de4d153d9
+      size: 61

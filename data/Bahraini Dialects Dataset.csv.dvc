@@ -1,0 +1,5 @@
+outs:
+- md5: 02d07d94862b5d3186a0eb48f11243c9
+  size: 856400
+  hash: md5
+  path: Bahraini Dialects Dataset.csv

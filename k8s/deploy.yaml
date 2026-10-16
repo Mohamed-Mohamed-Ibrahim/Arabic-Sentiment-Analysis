@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlops-stable
+  namespace: production
+  labels: 
+    app: mlops
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      app: mlops
+      version: v1
+  template:
+    metadata:
+      labels: 
+        app: mlops
+        version: v1
+    spec:
+      containers:
+      - name: mlops
+        image: mlops-final-project:v1
+        ports:
+          - containerPort: 8000
+            protocol: TCP
+        env: 
+          - name: WHOAMI_NAME
+            value: "STABLE"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlops-canary
+  namespace: production
+  labels: 
+    app: mlops
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: mlops
+      version: v2
+  template:
+    metadata:
+      labels: 
+        app: mlops
+        version: v2
+    spec:
+      containers:
+      - name: mlops
+        image: mlops-final-project:v2
+        ports:
+          - containerPort: 8000
+            protocol: TCP
+        env: 
+          - name: WHOAMI_NAME
+            value: "CANARY"
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mlops-stable
+  namespace: production
+spec:
+  selector: 
+    app: mlops
+    version: v1
+  ports: 
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mlops-canary
+  namespace: production
+spec:
+  selector: 
+    app: mlops
+    version: v2
+  ports: 
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata: 
+  name: mlops-stable
+  namespace: production
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: mlops.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend: 
+          service: 
+            name: mlops-stable
+            port: 
+              number: 8000
+---
