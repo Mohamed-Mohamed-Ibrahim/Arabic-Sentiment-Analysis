@@ -23,21 +23,39 @@ SEED = 42
 
 
 class TextClassificationModel(nn.Module):
-    def __init__(self, vocab_size, embed_dim, num_class):
+    def __init__(
+        self,
+        vocab_size: int = 20000,
+        embed_dim: int = 64,
+        hidden_dim: int = 128,
+        num_class: int = 2,
+        dropout: float = 0.3,
+    ):
         super().__init__()
-        self.embedding = nn.EmbeddingBag(vocab_size, embed_dim, sparse=False)
-        self.fc = nn.Linear(embed_dim, num_class)
+        self.embedding = nn.EmbeddingBag(
+            vocab_size, embed_dim, mode="mean", sparse=False
+        )
+        self.norm = nn.LayerNorm(embed_dim)
+        self.classifier = nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Linear(embed_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, num_class),
+        )
         self.init_weights()
 
     def init_weights(self):
-        initrange = 0.5
-        self.embedding.weight.data.uniform_(-initrange, initrange)
-        self.fc.weight.data.uniform_(-initrange, initrange)
-        self.fc.bias.data.zero_()
+        nn.init.xavier_uniform_(self.embedding.weight)
+        for layer in self.classifier:
+            if isinstance(layer, nn.Linear):
+                nn.init.kaiming_normal_(layer.weight, nonlinearity="relu")
+                nn.init.zeros_(layer.bias)
 
     def forward(self, text, offsets):
-        embedded = self.embedding(text, offsets)
-        return self.fc(embedded)
+        x = self.embedding(text, offsets)
+        x = self.norm(x)
+        return self.classifier(x)
 
 
 def get_collate_fn(tokenizer, vocab_dict):
@@ -202,7 +220,6 @@ def main():
                 },
                 f,
             )
-
 
 
 if __name__ == "__main__":
