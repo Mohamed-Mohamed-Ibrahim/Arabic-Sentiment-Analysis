@@ -38,7 +38,7 @@ def _earliest_predictions_file(path: Path) -> Path:
         return path
 
     dated_files = sorted(path.glob("predictions_????-??-??.jsonl"), reverse=True)
-    print(dated_files)
+
     if dated_files:
         return dated_files[0]
     
