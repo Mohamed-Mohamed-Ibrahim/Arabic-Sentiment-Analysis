@@ -1,4 +1,4 @@
-service: "service:ArabicSentimentMode"
+service: "service:ArabicSentimentModel"
 labels:
   owner: bentoml-model
 include:
