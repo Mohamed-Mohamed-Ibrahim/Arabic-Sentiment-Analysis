@@ -59,7 +59,7 @@ flowchart LR
     ```
 ---
 
-## Quick start
+## Quick start (Fastapi)
 
 Run the following 3 commands on any machine:
 
@@ -107,13 +107,52 @@ Expected response:
 - `GET /health` — health check endpoint
 - `GET /metrics` — Prometheus metrics export
 
-## Docker
+## Docker (BentoML)
+
+Start the BentoML API and monitoring stack:
 
 ```bash
 docker compose up --build
 ```
 
-This starts the application and monitoring stack defined in the project configuration.
+The API is available on `http://localhost:8000`. BentoML uses a `requests` array for
+the batchable `/predict` endpoint:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "req": {
+    "text": "أنا راضٍ جدًا عن الخدمة"
+  }
+}'
+```
+
+Example prediction response (the score and prediction can vary):
+
+```json
+{
+    "label": "Positive",
+    "confidence": 0.97,
+    "model_version": "v1"
+}
+```
+
+Health check response:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/health' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+```json
+{"status":"healthy"}
+```
 
 ## MLflow tracking and registry
 
@@ -142,7 +181,7 @@ The project uses DVC to keep the data and pipeline reproducible.
 
 ```bash
 uv sync --all-groups # The reason for this command is due long time taken by syncing normal for just running the main project without training.
-uv run mlflow server --port 5000 # The reason for this command is that mlflow is needed to make successful training.
+uv run mlflow server --port 5000 & # The reason for this command is that mlflow is needed to make successful training.
 uv run dvc repro -f
 uv run dvc status
 ```
@@ -159,10 +198,49 @@ The project exposes the model through two serving paths:
 ### BentoML
 
 ```bash
-bentoml serve
+uv run bentoml serve
 ```
 
-The BentoML service is intended for production deployment and is exposed through the `predict` endpoint.
+To run BentoML without Docker, start the service and send requests to the same API:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "req": {
+    "text": "أنا راضٍ جدًا عن الخدمة"
+  }
+}'
+```
+
+Example prediction response (the score and prediction can vary):
+
+```json
+{
+    "label": "Positive",
+    "confidence": 0.97,
+    "model_version": "v1"
+}
+```
+
+Health check response:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/health' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+```json
+{"status":"healthy"}
+```
+
+The `/predict` response contains a list of predictions with `label`, `confidence`,
+and `model_version` fields. The same request format works with Docker Compose.
 
 ## Load testing
 
@@ -229,6 +307,13 @@ V1: Fastapi
 V2: BentoML
 
 ![](./reports/canary.png)
+
+## Peer Reivew
+
+I have reviewed Abdelrahman Omran in his LLMops project and he has done pretty good job.
+
+Issue: [link](https://github.com/abdelrahman-omran/Bilingual-Legal-RAG/issues/17) 
+Document: [link](https://drive.google.com/file/d/1sY1B-7jqakKw8jnKeRN910JqCtXXpzln/view?usp=sharing)
 
 ## Project structure
 

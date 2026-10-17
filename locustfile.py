@@ -38,17 +38,7 @@ class BentoMLUser(HttpUser):
 
     @task(3)
     def test_predict_single(self):
-        payload = {"requests": [{"text": random.choice(SAMPLE_TEXTS)}]}
-        self.client.post("/predict", json=payload)
-
-    @task(1)
-    def test_predict_batch(self):
-        payload = {
-            "requests": [
-                {"text": random.choice(SAMPLE_TEXTS)}
-                for _ in range(random.randint(2, 5))
-            ]
-        }
+        payload = {"req": {"text": random.choice(SAMPLE_TEXTS)}}
         self.client.post("/predict", json=payload)
 
     @task(1)
