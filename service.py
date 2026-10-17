@@ -101,3 +101,19 @@ class ArabicSentimentModel:
             time.perf_counter() - t0
         )
         return responses
+
+    @bentoml.api(route="/predict")
+    async def predict_one(self, req: PredictRequest) -> PredictResponse:
+        t0 = time.perf_counter()
+        label, confidence, version = await run_in_threadpool(
+            self.model.predict, [req.text]
+        )
+        schedule_prediction(req.text, label, confidence, version)
+        production_text_lengths.append(len(req.text))
+        production_confidence_scores.append(confidence)
+        REQUEST_LATENCY.labels(endpoint="/predict", status="200").observe(
+            time.perf_counter() - t0
+        )
+        return PredictResponse(
+            label=label, confidence=round(confidence, 5), model_version=version
+        )
