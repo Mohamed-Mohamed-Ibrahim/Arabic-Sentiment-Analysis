@@ -43,20 +43,5 @@ train = [
     "transformers>=5.19.0",
 ]
 
-[tool.uv.workspace]
-members = [
-    "notebooks",
-]
-
-[tool.uv.sources]
-torch = { index = "pytorch-cpu" }
-torchdata = { index = "pytorch-cpu" }
-torchtext = { index = "pytorch-cpu" }
-
-[[tool.uv.index]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-explicit = true
-
 [tool.ruff.lint.per-file-ignores]
 "notebooks/*" = ["F401", "F811", "I001"]
