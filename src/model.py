@@ -2,6 +2,7 @@ import pickle
 from abc import ABC, abstractmethod
 
 import numpy as np
+import onnx
 import onnxruntime as ort
 import scipy
 import yaml
@@ -32,7 +33,14 @@ class ArabicSentimentModel(ModelBase):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_model_name)
         self.classes = {0: "Negative", 1: "Positive"}
         self.version = params["version"]
-        self.max_token_val = 7968
+        self.max_token_val = self._get_vocab_limit(model_file_path)
+
+    def _get_vocab_limit(self, model_file_path):
+        model = onnx.load(model_file_path)
+        for init in model.graph.initializer:
+            if "embedding.weight" == init.name.lower() and len(init.dims) >= 2:
+                return init.dims[0]
+        return 14973
 
     def text_pipeline(self, text: str) -> list[int]:
         return [

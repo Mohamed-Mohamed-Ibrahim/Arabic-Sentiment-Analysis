@@ -22,39 +22,49 @@ LR = 0.01
 EMBED_DIM = 64
 SEED = 42
 
+
 class TextClassificationModel(nn.Module):
-    def __init__(self, vocab_size: int, embed_dim: int = 128, hidden_dim: int = 128, num_class: int = 4, dropout: float = 0.4):
+    def __init__(
+        self,
+        vocab_size: int,
+        embed_dim: int = 128,
+        hidden_dim: int = 128,
+        num_class: int = 4,
+        dropout: float = 0.4,
+    ):
         super().__init__()
-        self.embedding = nn.EmbeddingBag(vocab_size, embed_dim, mode='mean', sparse=False)
+        self.embedding = nn.EmbeddingBag(
+            vocab_size, embed_dim, mode="mean", sparse=False
+        )
         self.norm1 = nn.LayerNorm(embed_dim)
-        
+
         self.fc1 = nn.Linear(embed_dim, hidden_dim)
         self.norm2 = nn.LayerNorm(hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, hidden_dim)
-        
+
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(hidden_dim, num_class)
-        
+
         self.init_weights()
 
     def init_weights(self):
         nn.init.xavier_uniform_(self.embedding.weight)
-        
+
         for layer in [self.fc1, self.fc2]:
-            nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
+            nn.init.kaiming_normal_(layer.weight, nonlinearity="relu")
             nn.init.zeros_(layer.bias)
-            
+
         nn.init.xavier_uniform_(self.classifier.weight)
         nn.init.zeros_(self.classifier.bias)
 
     def forward(self, text: torch.Tensor, offsets: torch.Tensor) -> torch.Tensor:
         x = self.embedding(text, offsets)
         x = self.norm1(x)
-        
+
         h = self.dropout(F.relu(self.fc1(x)))
         h = self.norm2(h)
         h = self.dropout(F.relu(self.fc2(h))) + h
-        
+
         return self.classifier(h)
 
 
@@ -142,11 +152,14 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-2)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='max', factor=0.5, patience=2
+        optimizer, mode="max", factor=0.5, patience=2
     )
 
-    mlflow.set_tracking_uri("http://localhost:5000/")
+    tracking_uri = "http://localhost:5000/"
+    mlflow.set_tracking_uri(tracking_uri)
+    print(f"Connecting to MLflow tracking server at {tracking_uri}...", flush=True)
     mlflow.set_experiment("Model Training 1")
+    print("Connected to MLflow tracking server.", flush=True)    
     with mlflow.start_run():
         mlflow.log_params(
             {
@@ -222,7 +235,6 @@ def main():
                 },
                 f,
             )
-
 
 
 if __name__ == "__main__":

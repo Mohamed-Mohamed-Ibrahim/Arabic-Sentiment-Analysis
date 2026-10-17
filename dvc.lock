@@ -19,21 +19,21 @@ stages:
     outs:
     - path: data/prepared
       hash: md5
-      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
-      size: 599444
+      md5: e1525ee8c139f95b9dfd266a3ac87cce.dir
+      size: 2232070
       nfiles: 4
   train:
     cmd: python notebooks/train.py
     deps:
     - path: data/prepared
       hash: md5
-      md5: 90516e0bf60d41545ac22a0692c17e2c.dir
-      size: 599444
+      md5: e1525ee8c139f95b9dfd266a3ac87cce.dir
+      size: 2232070
       nfiles: 4
     - path: notebooks/train.py
       hash: md5
-      md5: 5e041893421d9074ec56a777039e0030
-      size: 7776
+      md5: 10298adbfb69de00f52fe7554a84d626
+      size: 7975
     params:
       params.yaml:
         train:
@@ -42,11 +42,6 @@ stages:
           lr: 0.1
           embed_dim: 256
           seed: 42
-    outs:
-    - path: data/training_baseline.json
-      hash: md5
-      md5: d2a0f994d90dc4d92cb12d16195cd052
-      size: 19979
   promote:
     cmd: python notebooks/promote.py
     deps:
@@ -57,5 +52,5 @@ stages:
     outs:
     - path: data/best_run.txt
       hash: md5
-      md5: 3b098e0c1c99fa4578cc096de4d153d9
-      size: 61
+      md5: 24ee8778d6265b343711899b16de74ad
+      size: 62

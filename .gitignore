@@ -224,4 +224,3 @@ mlartifacts/
 *.onnx
 *.pth
 *.pt
-best_run.txt

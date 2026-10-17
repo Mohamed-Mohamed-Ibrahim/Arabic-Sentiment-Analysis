@@ -1,0 +1,2 @@
+run_id: 883e1880cbdf4a2fa9af6912f049944f
+test_accuracy: 0.786

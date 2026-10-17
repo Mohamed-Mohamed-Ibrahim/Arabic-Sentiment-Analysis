@@ -37,7 +37,8 @@ def _earliest_predictions_file(path: Path) -> Path:
     if path.is_file():
         return path
 
-    dated_files = sorted(path.glob("predictions_????-??-??.jsonl"))
+    dated_files = sorted(path.glob("predictions_????-??-??.jsonl"), reverse=True)
+
     if dated_files:
         return dated_files[0]
     
@@ -93,10 +94,9 @@ def main() -> None:
 
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     report.save_html(str(REPORT_PATH))
-
     response = requests.post(
         GAUGES_URL,
-        json={"feature_psi": feature_psi},
+        json={"payload":{"feature_psi": feature_psi}},
         timeout=10,
     )
     response.raise_for_status()
