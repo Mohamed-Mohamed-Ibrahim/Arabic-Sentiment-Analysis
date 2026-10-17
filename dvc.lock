@@ -38,7 +38,7 @@ stages:
       params.yaml:
         train:
           batch_size: 1
-          epochs: 3
+          epochs: 10
           lr: 0.1
           embed_dim: 256
           seed: 42
@@ -52,5 +52,5 @@ stages:
     outs:
     - path: data/best_run.txt
       hash: md5
-      md5: 3b098e0c1c99fa4578cc096de4d153d9
-      size: 61
+      md5: 24ee8778d6265b343711899b16de74ad
+      size: 62
