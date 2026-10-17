@@ -7,3 +7,4 @@
 !/scoring/output/
 !/scoring/output/predictions.jsonl
 !/training_baseline.json
+!best_run.txt

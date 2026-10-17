@@ -20,6 +20,3 @@ stages:
     cmd: python notebooks/promote.py
     deps:
       - notebooks/promote.py
-    outs:
-      - data/best_run.txt:
-          cache: false
