@@ -31,6 +31,34 @@ jobs:
       - name: Run tests
         run: |
           uv run pytest -v
+      - name: Check model test accuracy (> 0.75)
+        run: |
+          python - <<'PY'
+          import math
+          from pathlib import Path
+
+          metrics = {}
+          for line in Path("data/best_run.txt").read_text().splitlines():
+            key, separator, value = line.partition(":")
+            if separator:
+              metrics[key.strip()] = value.strip()
+
+          raw_accuracy = metrics.get("test_accuracy")
+          if raw_accuracy is None:
+            raise SystemExit("data/best_run.txt has no test_accuracy metric")
+
+          try:
+            accuracy = float(raw_accuracy)
+          except ValueError:
+            raise SystemExit(f"Invalid test_accuracy: {raw_accuracy!r}")
+
+          if not math.isfinite(accuracy) or accuracy <= 0.75:
+            raise SystemExit(
+              f"Test accuracy must be greater than 0.75; got {accuracy:.3f}"
+            )
+
+          print(f"Test accuracy {accuracy:.3f} passed the 0.75 threshold")
+          PY
   build-and-push: 
     runs-on: ubuntu-latest
     needs: test
