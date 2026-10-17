@@ -303,10 +303,31 @@ CI is configured in `.github/workflows/ci_cd.yml` and includes:
 
 Treated canary rollout on 2 versions of the server with 75/25 percentage. After trying different times the number is nearly correct by curl /healthz which is found only in BentoML and not Fastapi.
 
-V1: Fastapi
+V1: Fastapi <br>
 V2: BentoML
 
 ![](./reports/canary.png)
+
+Starting deployment
+```bash
+kubectl apply -f k8s/deploy.yaml
+kubectl apply -f canary.yaml
+```
+
+Starting Ingress Nginx
+```bash 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/baremetal/deploy.yaml
+```
+
+Exposing port for testing
+```bash
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80
+```
+
+Running the testing command
+```bash
+for i in $(seq 1 100); do curl -s -o /dev/null -w "%{http_code}\n" -H "Host: mlops.example.com" http://localhost:8000/healthz; done | grep -c 404
+```
 
 ## Peer Reivew
 
