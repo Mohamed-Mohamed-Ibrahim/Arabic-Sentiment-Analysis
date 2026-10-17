@@ -155,8 +155,11 @@ def main():
         optimizer, mode="max", factor=0.5, patience=2
     )
 
-    mlflow.set_tracking_uri("http://localhost:5000/")
+    tracking_uri = "http://localhost:5000/"
+    mlflow.set_tracking_uri(tracking_uri)
+    print(f"Connecting to MLflow tracking server at {tracking_uri}...", flush=True)
     mlflow.set_experiment("Model Training 1")
+    print("Connected to MLflow tracking server.", flush=True)    
     with mlflow.start_run():
         mlflow.log_params(
             {

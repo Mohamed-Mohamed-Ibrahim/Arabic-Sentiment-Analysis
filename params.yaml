@@ -1,5 +1,5 @@
 version: 1.0.0
-samples: 10000
+samples: 100
 
 prepare:
   seed: 42
@@ -7,7 +7,7 @@ prepare:
 
 train:
   batch_size: 1
-  epochs: 10
+  epochs: 3
   lr: 0.1
   embed_dim: 256
   seed: 42
