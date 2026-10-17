@@ -59,6 +59,31 @@ async def predict(req: PredictRequest):
     return PredictResponse(label=res, confidence=round(prob, 5), model_version=version)
 
 
+@app.post("/predict/batch", response_model=list[PredictResponse])
+async def predict_batch(requests: list[PredictRequest]):
+    t0 = time.perf_counter()
+    responses = []
+    for req in requests:
+        label, confidence, version = await run_in_threadpool(
+            model.predict, [req.text]
+        )
+        production_text_lengths.append(len(req.text))
+        production_confidence_scores.append(confidence)
+        responses.append(
+            PredictResponse(
+                label=label,
+                confidence=round(confidence, 5),
+                model_version=version,
+            )
+        )
+        schedule_prediction(req.text, label, confidence, version)
+
+    REQUEST_LATENCY.labels(endpoint="/predict", status="200").observe(
+        time.perf_counter() - t0
+    )
+    return responses
+
+
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
