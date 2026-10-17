@@ -8,7 +8,7 @@ dependencies = [
     "bentoml>=1.4.39",
     "coverage>=7.16.2",
     "dvc>=3.67.1",
-    "evidently>=0.5.0",
+    "evidently==0.5.0",
     "fastapi>=0.141.1",
     "locust>=2.46.0",
     "mlflow>=3.16.0",

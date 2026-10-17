@@ -385,7 +385,7 @@ requires-dist = [
     { name = "bentoml", specifier = ">=1.4.39" },
     { name = "coverage", specifier = ">=7.16.2" },
     { name = "dvc", specifier = ">=3.67.1" },
-    { name = "evidently", specifier = ">=0.5.0" },
+    { name = "evidently", specifier = "==0.5.0" },
     { name = "fastapi", specifier = ">=0.141.1" },
     { name = "locust", specifier = ">=2.46.0" },
     { name = "mlflow", specifier = ">=3.16.0" },

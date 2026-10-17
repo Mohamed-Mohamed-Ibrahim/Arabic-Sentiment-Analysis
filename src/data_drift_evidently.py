@@ -94,10 +94,9 @@ def main() -> None:
 
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     report.save_html(str(REPORT_PATH))
-
     response = requests.post(
         GAUGES_URL,
-        json={"feature_psi": feature_psi},
+        json={"payload":{"feature_psi": feature_psi}},
         timeout=10,
     )
     response.raise_for_status()
