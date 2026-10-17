@@ -38,9 +38,8 @@ class ArabicSentimentModel(ModelBase):
     def _get_vocab_limit(self, model_file_path):
         model = onnx.load(model_file_path)
         for init in model.graph.initializer:
-            if "embedding.weight" == init.name.lower():
-                if len(init.dims) >= 2:
-                    return init.dims[0]
+            if "embedding.weight" == init.name.lower() and len(init.dims) >= 2:
+                return init.dims[0]
         return 14973
 
     def text_pipeline(self, text: str) -> list[int]:
